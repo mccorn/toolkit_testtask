@@ -1,0 +1,25 @@
+.header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    min-height: 50px;
+    min-width: 1000px; 
+
+    padding: 10px 0px;
+    background-color: rgba(116, 123, 255, 1);
+    box-shadow: 0px -10px 4px rgba(116, 123, 255, 1);
+}
+
+.form_wrapper {
+    width: 500px;
+    margin: 0 auto;
+}
+
+form {
+    width: 100%;
+    display: flex;
+}
+
+input {
+    flex: 1;
+}
