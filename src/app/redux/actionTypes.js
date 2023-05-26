@@ -1,0 +1,4 @@
+export const GET_ITEMS = 'GET_ITEMS';
+export const SET_ITEMS = 'SET_ITEMS';
+export const GET_ITEMS_BY_USER = 'GET_ITEMS_BY_USER';
+export const SET_SEARCH_REQUEST_STRING = 'SET_SEARCH_REQUEST_STRING';

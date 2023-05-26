@@ -1,85 +1,120 @@
 import { useState, useEffect } from "react";
-import {useQuery, useLazyQuery} from "@apollo/client";
+import { useQuery, useLazyQuery } from "@apollo/client";
 
-import {GET_REPOS, GET_REPOS_BY_USER, GET_VIEWER} from "../../query/repos.ts";
+import { GET_REPOS, GET_REPOS_BY_USER, GET_VIEWER } from "../../query/repos.ts";
 
 import Slider from "../../components/Slider";
 import RepoCard from "../../components/RepoCard";
 import "./index.css";
 import SearchForm from "../../components/SearchForm/index.tsx";
+import { connect } from "react-redux";
+import * as actions from "../../redux/actionTypes";
 
-function Home() {
-  const lastRequest = sessionStorage.getItem("lastRequest") || "";
-  const [requestRepo, setRequestRepo] = useState<string>(lastRequest);
+function Home(props) {
+  const { repositories, searchRequestString } = props;
+  const [hasChange, setHasChange] = useState<boolean>(false);
   const [userLogin, setUserLogin] = useState<string>("");
-  const [pageNum, setPageNum] = useState<number>(0);
-  const [repositoriesFull, setRepos] = useState([]);
 
-  const {data: user} = useQuery(GET_VIEWER); 
+  const { data: user } = useQuery(GET_VIEWER);
 
-  const [execute, {data, loading, error}] = useLazyQuery(requestRepo ? GET_REPOS : GET_REPOS_BY_USER, {
+  // const {searchRequestString, repositories} = props;
+
+  const [executeUser, { data: dataUser }] = useLazyQuery(GET_REPOS_BY_USER, {
     variables: {
-      getQuery: `${requestRepo || userLogin}`,
+      getQuery: `${userLogin}`,
+    },
+  });
+
+  const [executeSearch, { data: dataSearch, loading }] = useLazyQuery(GET_REPOS, {
+    variables: {
+      getQuery: `${searchRequestString}`,
     },
   });
 
   useEffect(() => {
-    if (user) {
-      setUserLogin(user.viewer.login);
-  
-      if (userLogin) execute();
+    if (!repositories || hasChange) {
+      console.log('!repositories');
+      
+      if (searchRequestString) {
+        executeSearch();
 
-      if (data) setRepos(requestRepo ? data.search.nodes : data.user.repositories.nodes);
+        if (dataSearch) {
+          setHasChange(false);
+
+          console.log('dataSearch', dataSearch)
+          const nodes = dataSearch.search.nodes
+
+          props.dispatch({ type: actions.SET_ITEMS, payload: nodes });
+          localStorage.setItem('repositories', JSON.stringify(nodes));
+        }
+      } else if (user) {
+        console.log('user', user)
+        setUserLogin(user.viewer.login);
+
+        if (userLogin) executeUser();
+
+        if (dataUser) {
+          const nodes = dataUser.user.repositories.nodes;
+
+          props.dispatch({ type: actions.SET_ITEMS, payload: nodes });
+          localStorage.setItem('repositories', JSON.stringify(nodes));
+        }
+      }
     }
-  }, [user, data, userLogin])
- 
+  }, [dataSearch, user, userLogin, dataUser, hasChange])
+
+  const handleSubmit = (event: { preventDefault: () => void, target: { value: string } }) => {
+    const value = event.target.value;
+    event.preventDefault();
+    setHasChange(true);
+    
+
+    props.dispatch({type: actions.SET_SEARCH_REQUEST_STRING, payload: value})
+    localStorage.setItem('searchRequestString', value);
+  }
+
+  const [pageNum, setPageNum] = useState<number>(0);
+
   const nextPage = () => setPageNum(Math.min(pageNum + 1, total - 1))
 
   const prevPage = () => setPageNum(Math.max(pageNum - 1, 0))
 
   const setPage = (num: number) => setPageNum(Math.min(total, Math.max(0, num)))
 
-  const handleSubmit = (event: {preventDefault: () => void, target: {value: string}}) => {
-    event.preventDefault();
-    setRequestRepo(event.target.value)
-  }
-
-  if (error) {
-		return <h2>{error.message}</h2>;
-	}
-
-  const repositories = repositoriesFull.slice(pageNum * 10, (pageNum + 1) * 10);
-  const total = Math.ceil(repositoriesFull.length / 10)
+  const repositoriesCut = repositories && repositories.slice(pageNum * 10, (pageNum + 1) * 10);
+  const total = repositories ? Math.ceil(repositories.length / 10) : 0
 
   return (
-    <>
+    <div className="page">
       <div className="header flex">
         <div className="form_wrapper">
-          <SearchForm onChange={handleSubmit} />
+          <SearchForm onChange={handleSubmit} value={props.searchRequestString} />
         </div>
       </div>
-      <div style={{ position: 'absolute', top: '20px' }}>Login: {userLogin || '---'}</div>
 
-      <div className="list">
+      <div className="box list">
         {
-          loading 
-            ? 'Loading..'
-            : (repositories && repositories.map((node, idx: number) => <RepoCard key={idx} data={node} />))
+          loading
+            ? <div className="text_align_center">Loading..</div>
+            : repositoriesCut.length ? repositoriesCut.map((node, idx: number) => <RepoCard key={idx} data={node} />) : <div className="text_align_center">Not found</div>
         }
-        
+
       </div>
 
-      {!loading &&
+      {repositories &&
         <Slider
-          nav={{ current: pageNum, total: Math.ceil(repositoriesFull.length / 10) }}
+          nav={{ current: pageNum, total }}
           onNextPageClick={nextPage}
           onPrevPageClick={prevPage}
           onPageClick={setPage}
-          disable={{ right: pageNum + 1 >= repositoriesFull.length / 10, left: pageNum <= 0 }}
+          disable={{ right: pageNum + 1 >= repositories.length / 10, left: pageNum <= 0 }}
         />
       }
-    </>
+    </div>
   )
 }
 
-export default Home
+const mapStateToProps = state => state.defaultReducer
+
+
+export default Home = connect(mapStateToProps)(Home);

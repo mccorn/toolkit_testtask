@@ -28,8 +28,8 @@ function RepoCard(props: {data: RepositoryCardProps}) {
   };
 
   return (
-    <div className='page'>
-      <div className='box'>
+    // <div className='page'>
+      // <div className='box'>
         <div className='card'>
           <div className='card_main'>
             <a href={url} target='_blank'>
@@ -49,8 +49,8 @@ function RepoCard(props: {data: RepositoryCardProps}) {
             <div className='moreinfo text_align_right'><Link to={"/repo/" + id}>Details {'>>'}</Link></div>
           </div>
         </div>
-      </div>
-    </div>
+      // </div>
+    // </div>
   )
 }
 
