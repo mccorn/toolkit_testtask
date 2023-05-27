@@ -14,12 +14,3 @@
     width: 500px;
     margin: 0 auto;
 }
-
-form {
-    width: 100%;
-    display: flex;
-}
-
-input {
-    flex: 1;
-}

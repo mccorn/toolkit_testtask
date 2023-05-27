@@ -4,20 +4,18 @@ import { useQuery, useLazyQuery } from "@apollo/client";
 import { GET_REPOS, GET_REPOS_BY_USER, GET_VIEWER } from "../../query/repos.ts";
 
 import Slider from "../../components/Slider";
-import RepoCard from "../../components/RepoCard";
-import "./index.css";
+import RepoCard from "../../components/RepositoryCard/index.tsx";
+import "./styles.css";
 import SearchForm from "../../components/SearchForm/index.tsx";
 import { connect } from "react-redux";
 import * as actions from "../../redux/actionTypes";
 
-function Home(props) {
+function Home(props: any) {
   const { repositories, searchRequestString } = props;
   const [hasChange, setHasChange] = useState<boolean>(false);
   const [userLogin, setUserLogin] = useState<string>("");
 
   const { data: user } = useQuery(GET_VIEWER);
-
-  // const {searchRequestString, repositories} = props;
 
   const [executeUser, { data: dataUser }] = useLazyQuery(GET_REPOS_BY_USER, {
     variables: {
@@ -33,22 +31,17 @@ function Home(props) {
 
   useEffect(() => {
     if (!repositories || hasChange) {
-      console.log('!repositories');
-      
       if (searchRequestString) {
         executeSearch();
 
         if (dataSearch) {
           setHasChange(false);
-
-          console.log('dataSearch', dataSearch)
           const nodes = dataSearch.search.nodes
 
           props.dispatch({ type: actions.SET_ITEMS, payload: nodes });
           localStorage.setItem('repositories', JSON.stringify(nodes));
         }
       } else if (user) {
-        console.log('user', user)
         setUserLogin(user.viewer.login);
 
         if (userLogin) executeUser();
@@ -63,12 +56,9 @@ function Home(props) {
     }
   }, [dataSearch, user, userLogin, dataUser, hasChange])
 
-  const handleSubmit = (event: { preventDefault: () => void, target: { value: string } }) => {
-    const value = event.target.value;
-    event.preventDefault();
+  const handleSubmit = (value: string) => {
     setHasChange(true);
     
-
     props.dispatch({type: actions.SET_SEARCH_REQUEST_STRING, payload: value})
     localStorage.setItem('searchRequestString', value);
   }
@@ -96,7 +86,7 @@ function Home(props) {
         {
           loading
             ? <div className="text_align_center">Loading..</div>
-            : repositoriesCut.length ? repositoriesCut.map((node, idx: number) => <RepoCard key={idx} data={node} />) : <div className="text_align_center">Not found</div>
+            : repositoriesCut.length ? repositoriesCut.map((node: any, idx: number) => <RepoCard key={idx} data={node} />) : <div className="text_align_center">Not found</div>
         }
 
       </div>
@@ -114,7 +104,7 @@ function Home(props) {
   )
 }
 
-const mapStateToProps = state => state.defaultReducer
+const mapStateToProps = (state: {defaultReducer: any}) => state.defaultReducer
 
 
-export default Home = connect(mapStateToProps)(Home);
+export default connect(mapStateToProps)(Home);

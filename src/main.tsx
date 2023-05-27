@@ -10,7 +10,8 @@ import { Provider } from 'react-redux'
 const client = new ApolloClient({
   uri: "https://api.github.com/graphql",
   headers: {
-    authorization: `Bearer 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`,
+    // authorization: `Bearer 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`,
+    authorization: `Bearer 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 `,
     // authorization: `Bearer ${document.process.env.GRAPHQL_API_KEY}`,
   },
   cache: new InMemoryCache(),

@@ -1,24 +1,13 @@
-import { useLazyQuery, useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import './index.css'
-import {useLocation} from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { GET_REPO_INFO } from '../../query/repos'
-import { useEffect } from 'react'
-
 
 function RepositoryPage() {
   const location = useLocation();
-  const id = location.pathname.split('/').pop()
-  const options = {
-    locale: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    timezone: 'UTC',
-    hour: 'numeric',
-    minute: 'numeric',
-  };
-
-  const {data} = useQuery(GET_REPO_INFO, {
+  const id = location.pathname.split('/').pop();
+  
+  const { data } = useQuery(GET_REPO_INFO, {
     variables: {
       getId: `${id}`,
     },
@@ -42,7 +31,19 @@ function RepositoryPage() {
               <h3>{name.toUpperCase()}</h3>
               <h6>
                 <>{"\u2606 " + stars}, </>
-                {(new Date(committedDate)).toLocaleString('ru-Ru', options)}
+                {(
+                  new Date(committedDate)).toLocaleString(
+                    'ru-Ru',
+                    {
+
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+
+                      hour: 'numeric',
+                      minute: 'numeric',
+                    }
+                  )}
               </h6>
             </div>
 

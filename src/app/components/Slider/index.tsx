@@ -1,10 +1,10 @@
 import classNames from 'classnames';
-import './index.css'
+import './styles.css'
 
 type PaginationProps = {
   onNextPageClick: () => void;
   onPrevPageClick: () => void;
-  onPageClick: () => void;
+  onPageClick: (num: number) => void;
   disable: {
     left: boolean;
     right: boolean;
@@ -60,19 +60,19 @@ function Slider(props: PaginationProps) {
 
   return (
     <div className='slider__wrapper'>
-      <div className={classNames('slider_mark slider_arrow', {disabled: disable.left})} onClick={handlePrevPageClick}>{"<"}</div>
+      <div className={classNames('slider__mark slider__arrow', {disabled: disable.left})} onClick={handlePrevPageClick}>{"<"}</div>
       <div className='slider'>
         
         {getMarks()}
        
       </div>
-      <div className={classNames('slider_mark slider_arrow', {disabled: disable.right})} onClick={handleNextPageClick}>{">"}</div>
+      <div className={classNames('slider__mark slider__arrow', {disabled: disable.right})} onClick={handleNextPageClick}>{">"}</div>
     </div>
   )
 }
 
 type PaginationMarkProps = {
-  onClick: () => void;
+  onClick: (num: number) => void;
   active: boolean;
   disabled: boolean;
   value: number;
@@ -82,8 +82,12 @@ type PaginationMarkProps = {
 function PaginationMark(props: PaginationMarkProps) {
   const { active, disabled, value, label, onClick } = props;
 
+  const handleClick = () => {
+    onClick(value)
+  }
+
   return (
-    <div key={value} className={classNames('slider_mark', { active, disabled })} onClick={() => onClick(value)}>{label}</div>
+    <div key={value} className={classNames('slider__mark', { active, disabled })} onClick={handleClick}>{label}</div>
   )
 }
 
