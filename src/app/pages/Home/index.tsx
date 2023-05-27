@@ -71,7 +71,7 @@ function Home(props: any) {
 
   const setPage = (num: number) => setPageNum(Math.min(total, Math.max(0, num)))
 
-  const repositoriesCut = repositories && repositories.slice(pageNum * 10, (pageNum + 1) * 10);
+  const repositoriesCut = repositories ? repositories.slice(pageNum * 10, (pageNum + 1) * 10) : [];
   const total = repositories ? Math.ceil(repositories.length / 10) : 0
 
   return (

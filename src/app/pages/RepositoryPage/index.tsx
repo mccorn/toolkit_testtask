@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import './index.css'
+import './styles.css'
 import { useLocation } from 'react-router-dom'
 import { GET_REPO_INFO } from '../../query/repos'
 

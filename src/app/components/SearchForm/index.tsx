@@ -1,8 +1,8 @@
 import './styles.module.css'
 
 
-function SearchForm(props: {onChange: (value: string) => void, value: string | undefined}) {
-  const {onChange, value = ''} = props;
+function SearchForm(props: {onChange: (value: string) => void, value: string | undefined | null}) {
+  const {onChange, value} = props;
 
   const handleChange = (event: { preventDefault: () => void, target: { value: string } }) => {
     const value = event.target.value;
@@ -13,7 +13,7 @@ function SearchForm(props: {onChange: (value: string) => void, value: string | u
 
   return (
     <form>
-      <input onChange={handleChange} value={value}></input>
+      <input onChange={handleChange} value={value || ""}></input>
       <button>search</button>
     </form>
   )
