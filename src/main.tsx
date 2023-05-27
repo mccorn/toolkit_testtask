@@ -9,7 +9,8 @@ import { Provider } from 'react-redux'
 
 // const token = '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';
 // const token = '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';
-const token = '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';
+// const token = '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';
+const token = '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';
 
 const client = new ApolloClient({
   uri: "https://api.github.com/graphql",
