@@ -7,7 +7,8 @@ import { ApolloProvider, ApolloClient, InMemoryCache, ApolloLink, HttpLink } fro
 import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 
-const token = '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';
+// const token = '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';
+const token = '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';
 
 const httpLink = new HttpLink({ uri: "https://api.github.com/graphql" });
 

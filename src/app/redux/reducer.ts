@@ -4,9 +4,12 @@ import * as actions from "./actionTypes";
 const repositories = localStorage.getItem('repositories')
 
 const initialState = {
-  token: '8c61dcb376512b2f1e4bf6a0e05d690165dca693',
+  token: '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',
   searchRequestString: localStorage.getItem('searchRequestString'),
   repositories: repositories ? JSON.parse(repositories) : null,
+
+  // searchRequestString: '',
+  // repositories: [],
 }
 
 const defaultReducer = (state = initialState, action: { type: string, payload?: any }) => {
