@@ -3,22 +3,26 @@ import ReactDOM from 'react-dom/client'
 import App from './app/App'
 import store from './app/redux/store'
 import './index.css'
-import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client'
+import { ApolloProvider, ApolloClient, InMemoryCache, ApolloLink, HttpLink } from '@apollo/client'
 import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 
-// const token = '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';
-// const token = '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';
-// const token = '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';
-const token = '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';
+const token = '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';
+
+const httpLink = new HttpLink({ uri: "https://api.github.com/graphql" });
+
+const authLink = new ApolloLink((operation, forward) => {
+  operation.setContext({
+    headers: {
+      authorization: token ? `Bearer ${token}` : ''
+    }
+  });
+
+  return forward(operation);
+});
 
 const client = new ApolloClient({
-  uri: "https://api.github.com/graphql",
-  headers: {
-    // authorization: `Bearer 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`,
-    authorization: `Bearer ${token} `,
-    // authorization: `Bearer ${document.process.env.GRAPHQL_API_KEY}`,
-  },
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 })
 

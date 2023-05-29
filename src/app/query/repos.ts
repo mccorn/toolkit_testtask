@@ -1,5 +1,13 @@
 import { gql } from "@apollo/client";
 
+export const GET_AUTH = gql`
+query { 
+    viewer { 
+      login
+    }
+}
+`
+
 export const GET_VIEWER = gql`
 query { 
     viewer { 
